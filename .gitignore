@@ -33,6 +33,8 @@ migrate_working_dir/
 # Generated files related
 generated_plugin_registrant.*
 GeneratedPluginRegistrant.*
+*.g.*
+*.freezed.*
 
 # Symbolication related
 app.*.symbols
