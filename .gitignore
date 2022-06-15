@@ -35,6 +35,7 @@ generated_plugin_registrant.*
 GeneratedPluginRegistrant.*
 *.g.*
 *.freezed.*
+*.mocks.*
 
 # Symbolication related
 app.*.symbols
