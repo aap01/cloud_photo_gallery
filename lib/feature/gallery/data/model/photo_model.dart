@@ -9,18 +9,15 @@ part 'photo_model.freezed.dart';
 part 'photo_model.g.dart';
 
 @freezed
-abstract class PhotoModel extends Model<Photo> with _$PhotoModel {
+class PhotoModel with _$PhotoModel implements Model<Photo> {
+  const PhotoModel._();
   const factory PhotoModel({
-    required String id,
-    required DateTime createdAt,
-    required DateTime updatedAt,
-    required DateTime promotedAt,
-    required int width,
-    required int height,
-    required String color,
-    required String blurHash,
-    required UrlsModel urlsModel,
-    required LinksModel linksModel,
+    String? id,
+    int? width,
+    int? height,
+    String? color,
+    @JsonKey(name: 'urls') UrlsModel? urlsModel,
+    @JsonKey(name: 'links') LinksModel? linksModel,
   }) = _PhotoModel;
 
   factory PhotoModel.fromJson(Map<String, dynamic> json) =>
@@ -28,15 +25,10 @@ abstract class PhotoModel extends Model<Photo> with _$PhotoModel {
 
   @override
   Photo toEntity() => Photo(
-        id: id,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
-        promotedAt: promotedAt,
-        width: width,
-        height: height,
-        color: color,
-        blurHash: blurHash,
-        urls: urlsModel.toEntity(),
-        links: linksModel.toEntity(),
+        id: id ?? '',
+        width: width ?? 0,
+        height: height ?? 0,
+        urls: urlsModel?.toEntity(),
+        links: linksModel?.toEntity(),
       );
 }
