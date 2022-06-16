@@ -19,7 +19,10 @@ class PhotoModel extends Photo {
     required super.height,
     this.linksModel,
     this.urlsModel,
-  });
+  }) : super(
+          links: linksModel,
+          urls: urlsModel,
+        );
 
   factory PhotoModel.fromJson(Map<String, dynamic> json) =>
       _$PhotoModelFromJson(json);
