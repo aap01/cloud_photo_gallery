@@ -1,4 +1,5 @@
 import 'package:cloud_photo_gallery/core/failure/failure.dart';
+import 'package:cloud_photo_gallery/core/failure/get_photo_list_failure.dart';
 import 'package:cloud_photo_gallery/core/usecase/params/page_listing_params.dart';
 import 'package:cloud_photo_gallery/feature/gallery/domain/repository/photo_repository.dart';
 import 'package:cloud_photo_gallery/feature/gallery/domain/usecase/get_photo_list_usecase.dart';
@@ -29,7 +30,8 @@ void main() {
       when(mockPhotoRepository.getPhotos(
         perPage: perPage,
         page: page,
-      )).thenAnswer((_) async => Left(serverFalure));
+      )).thenAnswer((_) async =>
+          Left(GetPhotoListFailure.server(serverFailure: serverFalure)));
 
       final result = await usecase(param: pageListingParams);
 
@@ -39,7 +41,8 @@ void main() {
           page: pageListingParams.page,
         ),
       );
-      expect(result, Left(serverFalure));
+      expect(result,
+          Left(GetPhotoListFailure.server(serverFailure: serverFalure)));
       verifyNoMoreInteractions(mockPhotoRepository);
     },
   );
