@@ -2,6 +2,7 @@
 import 'package:cloud_photo_gallery/core/constant/build_constants.dart';
 import 'package:cloud_photo_gallery/core/exception/server_exception.dart';
 import 'package:cloud_photo_gallery/core/failure/failure.dart';
+import 'package:cloud_photo_gallery/core/failure/get_photo_list_failure.dart';
 import 'package:cloud_photo_gallery/feature/gallery/data/data_source/remote/photo_remote_data_source.dart';
 import 'package:cloud_photo_gallery/feature/gallery/data/model/photo_model.dart';
 import 'package:cloud_photo_gallery/feature/gallery/domain/entity/photo.dart';
@@ -27,24 +28,35 @@ class PhotoRepositoryImpl implements PhotoRepository {
         page: page,
         perPage: perPage,
       );
-      return response.map(
+      return response.when(
         error: (value) {
-          final errorModel = value.error;
-          return Left(ServerFailure(message: errorModel.errors.first));
+          return Left(
+            GetPhotoListFailure.server(
+              serverFailure: ServerFailure(
+                message: value.errors.first,
+              ),
+            ),
+          );
         },
         success: (value) {
-          final photoList = (value.response as List).map((e) {
+          final photoList = (value as List).map((e) {
             final model = PhotoModel.fromJson(e as Map<String, dynamic>);
             if (BuildConstants.debug) {
               print(model.toJson());
             }
-            return model.toEntity();
+            return model;
           }).toList();
           return Right(photoList);
         },
       );
     } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message));
+      return Left(
+        GetPhotoListFailure.server(
+          serverFailure: ServerFailure(
+            message: e.message,
+          ),
+        ),
+      );
     }
   }
 }
