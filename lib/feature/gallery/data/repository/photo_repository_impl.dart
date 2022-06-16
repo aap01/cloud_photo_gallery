@@ -38,8 +38,7 @@ class PhotoRepositoryImpl implements PhotoRepository {
           );
         },
         success: (value) {
-          final photoListModel =
-              PhotoListModel.fromJson({'photos': value});
+          final photoListModel = PhotoListModel.fromJson({'photos': value});
           return Right(photoListModel.photos);
         },
       );
