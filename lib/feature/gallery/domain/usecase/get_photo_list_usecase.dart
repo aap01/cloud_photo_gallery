@@ -10,7 +10,7 @@ import '../../../../core/usecase/params/page_listing_params.dart';
 class GetPhotoListUsecase implements Usecase<PageListingParams, List<Photo>> {
   late final PhotoRepository _photoRepository;
   GetPhotoListUsecase({
-    required photoRepository,
+    required PhotoRepository photoRepository,
   }) {
     _photoRepository = photoRepository;
   }
