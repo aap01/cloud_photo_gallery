@@ -9,25 +9,25 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'photolist_cubit.freezed.dart';
 part 'photolist_state.dart';
 
-class PhotolistCubit extends Cubit<PhotolistState> {
+class PhotoListCubit extends Cubit<PhotoListState> {
   late GetPhotoListUsecase _getPhotoListUsecase;
 
-  PhotolistCubit({
+  PhotoListCubit({
     required getPhotoListUsecase,
-  }) : super(const PhotolistState.initial()) {
+  }) : super(const PhotoListState.initial()) {
     _getPhotoListUsecase = getPhotoListUsecase;
   }
 
   void getPhotos({
-    required int perPage,
+    int perPage = 10,
     required int page,
   }) async {
-    emit(const PhotolistState.loading());
+    emit(const PhotoListState.loading());
     final photoListEither = await _getPhotoListUsecase(
         param: PageListingParams(perPage: perPage, page: page));
     photoListEither.fold(
-      (l) => emit(PhotolistState.failed(failure: l)),
-      (r) => emit(PhotolistState.loaded(photos: r)),
+      (l) => emit(PhotoListState.failed(failure: l)),
+      (r) => emit(PhotoListState.loaded(photos: r)),
     );
   }
 }
