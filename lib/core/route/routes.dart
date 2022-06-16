@@ -1,5 +1,5 @@
 import 'package:cloud_photo_gallery/core/constant/title_constants.dart';
-import 'package:cloud_photo_gallery/home_page.dart';
+import 'package:cloud_photo_gallery/feature/gallery/presentation/screen/home_page.dart';
 import 'package:flutter/material.dart';
 
 class Routes {
