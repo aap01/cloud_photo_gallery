@@ -7,12 +7,13 @@ part 'links_model.freezed.dart';
 part 'links_model.g.dart';
 
 @freezed
-abstract class LinksModel extends Model<Links> with _$LinksModel {
+class LinksModel with _$LinksModel implements Model<Links> {
+  const LinksModel._();
   const factory LinksModel({
-    required String self,
-    required String html,
-    required String download,
-    required String downloadLocation,
+    String? self,
+    String? html,
+    String? download,
+    @JsonKey(name: 'download_location') String? downloadLocation,
   }) = _LinksModel;
 
   factory LinksModel.fromJson(Map<String, dynamic> json) =>
@@ -20,9 +21,9 @@ abstract class LinksModel extends Model<Links> with _$LinksModel {
 
   @override
   Links toEntity() => Links(
-        self: self,
-        download: download,
-        html: html,
-        downloadLocation: downloadLocation,
+        self: self ?? '',
+        download: download ?? '',
+        html: html ?? '',
+        downloadLocation: downloadLocation ?? '',
       );
 }
