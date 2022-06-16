@@ -1,29 +1,20 @@
-import 'package:cloud_photo_gallery/feature/gallery/data/model/model.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 import '../../domain/entity/links.dart';
 
-part 'links_model.freezed.dart';
 part 'links_model.g.dart';
 
-@freezed
-class LinksModel with _$LinksModel implements Model<Links> {
-  const LinksModel._();
-  const factory LinksModel({
-    String? self,
-    String? html,
-    String? download,
-    @JsonKey(name: 'download_location') String? downloadLocation,
-  }) = _LinksModel;
+@JsonSerializable()
+class LinksModel extends Links {
+  LinksModel({
+    required super.self,
+    required super.html,
+    required super.download,
+    required super.downloadLocation,
+  });
 
   factory LinksModel.fromJson(Map<String, dynamic> json) =>
       _$LinksModelFromJson(json);
 
-  @override
-  Links toEntity() => Links(
-        self: self ?? '',
-        download: download ?? '',
-        html: html ?? '',
-        downloadLocation: downloadLocation ?? '',
-      );
+  Map<String, dynamic> toJson() => _$LinksModelToJson(this);
 }
