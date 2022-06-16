@@ -7,14 +7,15 @@ part 'urls_model.freezed.dart';
 part 'urls_model.g.dart';
 
 @freezed
-abstract class UrlsModel extends Model<Urls> with _$UrlsModel {
+abstract class UrlsModel with _$UrlsModel implements Model<Urls> {
+  const UrlsModel._();
   const factory UrlsModel({
-    required String raw,
-    required String full,
-    required String regular,
-    required String small,
-    required String thumb,
-    required String smallS3,
+    String? raw,
+    String? full,
+    String? regular,
+    String? small,
+    String? thumb,
+    String? smallS3,
   }) = _UrlsModel;
 
   factory UrlsModel.fromJson(Map<String, dynamic> json) =>
@@ -22,11 +23,11 @@ abstract class UrlsModel extends Model<Urls> with _$UrlsModel {
 
   @override
   Urls toEntity() => Urls(
-        raw: raw,
-        full: full,
-        regular: regular,
-        small: small,
-        thumb: thumb,
-        smallS3: smallS3,
+        raw: raw ?? '',
+        full: full ?? '',
+        regular: regular ?? '',
+        small: small ?? '',
+        thumb: thumb ?? '',
+        smallS3: smallS3 ?? '',
       );
 }
