@@ -1,6 +1,7 @@
 import 'package:cloud_photo_gallery/core/api/api.dart';
 import 'package:cloud_photo_gallery/core/api/api_response.dart';
 import 'package:cloud_photo_gallery/feature/gallery/data/data_source/remote/photo_remote_data_source.dart';
+import 'package:cloud_photo_gallery/feature/gallery/data/model/page_listing_model.dart';
 
 class PhotoRemoteDataSourceImpl implements PhotoRemoteDataSource {
   late Api _api;
@@ -18,5 +19,8 @@ class PhotoRemoteDataSourceImpl implements PhotoRemoteDataSource {
     required int page,
     required int perPage,
   }) async =>
-      _api.get(url: _url + _photosEndPoint);
+      _api.get(
+        url: _url + _photosEndPoint,
+        queryParams: PageListingModel(perPage: perPage, page: page).toJson(),
+      );
 }
