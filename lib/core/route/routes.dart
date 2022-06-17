@@ -1,7 +1,8 @@
 import 'package:cloud_photo_gallery/core/constant/title_constants.dart';
-import 'package:cloud_photo_gallery/feature/feature/presentaion/screen/photo_view_screen.dart';
 import 'package:cloud_photo_gallery/feature/gallery/presentation/screen/gallery_screen.dart';
 import 'package:flutter/material.dart';
+
+import '../../feature/photo_view/presentaion/screen/photo_view_screen.dart';
 
 class Routes {
   static const home = '/';
