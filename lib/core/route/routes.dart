@@ -1,4 +1,5 @@
 import 'package:cloud_photo_gallery/core/constant/title_constants.dart';
+import 'package:cloud_photo_gallery/feature/feature/presentaion/screen/photo_view_screen.dart';
 import 'package:cloud_photo_gallery/feature/gallery/presentation/screen/gallery_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +13,11 @@ class Routes {
       case home:
         return _getRoute(
           child: const GalleryScreen(),
+          settings: settings,
+        );
+      case photoViewScreen:
+        return _getRoute(
+          child: const PhotoViewScreen(),
           settings: settings,
         );
       default:
@@ -28,6 +34,7 @@ class Routes {
   }) {
     return MaterialPageRoute(
       builder: (context) => child,
+      settings: settings,
     );
   }
 }
