@@ -2,6 +2,7 @@ import 'package:cloud_photo_gallery/core/constant/message_constants.dart';
 import 'package:cloud_photo_gallery/core/failure/get_photo_list_failure.dart';
 import 'package:cloud_photo_gallery/feature/gallery/presentation/widget/cell_error_widget.dart';
 import 'package:cloud_photo_gallery/feature/gallery/presentation/widget/full_page_error_widget.dart';
+import 'package:cloud_photo_gallery/feature/gallery/presentation/widget/grid_pattern_constants.dart';
 import 'package:cloud_photo_gallery/feature/gallery/presentation/widget/photo_grid_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -101,13 +102,8 @@ class _PhotoGridBuilderWidgetState extends State<_PhotoGridBuilderWidget> {
               crossAxisCount: 4,
               mainAxisSpacing: 4,
               crossAxisSpacing: 4,
-              repeatPattern: QuiltedGridRepeatPattern.inverted,
-              pattern: [
-                const QuiltedGridTile(2, 2),
-                const QuiltedGridTile(1, 1),
-                const QuiltedGridTile(1, 1),
-                const QuiltedGridTile(1, 2),
-              ],
+              repeatPattern: QuiltedGridRepeatPattern.same,
+              pattern: GridPatternConstants.galleryPattern,
             ),
           )
         ],
