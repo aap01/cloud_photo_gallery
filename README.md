@@ -1,10 +1,12 @@
-# cloud_photo_gallery
+# Cloud Photo Gallery
 
-A flutter project to
+A flutter application
 
-- showcase in a gallery photos stored in cloud
-- share photos
-- download photos
+## Features
+
+ :white_check_mark: Showcase cloud photos in a gallery
+ :white_large_square: Download photos
+ :white_large_square: Share photos
 
 ## Commands
 
