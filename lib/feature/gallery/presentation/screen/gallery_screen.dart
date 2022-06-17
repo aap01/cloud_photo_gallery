@@ -1,3 +1,4 @@
+import 'package:cloud_photo_gallery/core/screen/theme_screen.dart';
 import 'package:cloud_photo_gallery/feature/gallery/presentation/widget/photo_grid.dart';
 import 'package:flutter/material.dart';
 
@@ -6,10 +7,8 @@ class GalleryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: SafeArea(
-        child: PhotoGridWidget(),
-      ),
+    return const ThemeScreen(
+      child: PhotoGridWidget(),
     );
   }
 }
