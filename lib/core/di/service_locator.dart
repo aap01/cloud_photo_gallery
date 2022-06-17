@@ -15,7 +15,9 @@ class ServiceLocator {
         () => GetPhotoListUsecase(photoRepository: sl<PhotoRepositoryImpl>()));
     sl.registerLazySingleton(
       () => PhotoRepositoryImpl(
-          photoRemoteDataSource: sl<PhotoRemoteDataSourceImpl>()),
+        photoRemoteDataSource: sl<PhotoRemoteDataSourceImpl>(),
+        networkConnectionChecker: sl<NetworkConnectionCheckerImpl>(),
+      ),
     );
     sl.registerLazySingleton(
       () => PhotoRemoteDataSourceImpl(api: sl<ApiImpl>()),
