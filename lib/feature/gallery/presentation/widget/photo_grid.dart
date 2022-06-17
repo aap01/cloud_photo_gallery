@@ -1,4 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_photo_gallery/core/constant/message_constants.dart';
+import 'package:cloud_photo_gallery/core/failure/get_photo_list_failure.dart';
+import 'package:cloud_photo_gallery/feature/gallery/presentation/widget/cell_error_widget.dart';
+import 'package:cloud_photo_gallery/feature/gallery/presentation/widget/full_page_error_widget.dart';
+import 'package:cloud_photo_gallery/feature/gallery/presentation/widget/photo_grid_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -20,32 +24,32 @@ class PhotoGridWidget extends StatelessWidget {
       create: (_) => PhotoListCubit(
         getPhotoListUsecase: sl<GetPhotoListUsecase>(),
       ),
-      child: const PhotoGridBuilderWidget(),
+      child: const _PhotoGridBuilderWidget(),
     );
   }
 }
 
-class PhotoGridBuilderWidget extends StatefulWidget {
-  const PhotoGridBuilderWidget({Key? key}) : super(key: key);
+class _PhotoGridBuilderWidget extends StatefulWidget {
+  const _PhotoGridBuilderWidget({Key? key}) : super(key: key);
 
   @override
-  State<PhotoGridBuilderWidget> createState() => _PhotoGridBuilderWidgetState();
+  State<_PhotoGridBuilderWidget> createState() =>
+      _PhotoGridBuilderWidgetState();
 }
 
-class _PhotoGridBuilderWidgetState extends State<PhotoGridBuilderWidget> {
+class _PhotoGridBuilderWidgetState extends State<_PhotoGridBuilderWidget> {
   late PhotoListCubit _photoListCubit;
   final _pagingController = PagingController<int, Photo>(
-    firstPageKey: 0,
-    invisibleItemsThreshold: 5,
+    firstPageKey: 1,
+    invisibleItemsThreshold: 1,
   );
   static const _perPage = 10;
-  int _pageKey = 0;
-  int _page = 1;
-
+  int _pageKey = 1;
+  late Function(int) _pageRequestListener;
   @override
   void dispose() {
-    super.dispose();
     _pagingController.dispose();
+    super.dispose();
   }
 
   @override
@@ -55,72 +59,113 @@ class _PhotoGridBuilderWidgetState extends State<PhotoGridBuilderWidget> {
 
   @override
   void didChangeDependencies() {
-    super.didChangeDependencies();
     _photoListCubit = context.read<PhotoListCubit>();
+    _pageRequestListener = (pageKey) {
+      _photoListCubit.getPhotos(
+        page: pageKey,
+        perPage: _perPage,
+      );
+    };
     _listentToCubit();
     _listenToScroll();
+    super.didChangeDependencies();
   }
 
   Widget _photoGridBuilderWidget() {
-    return CustomScrollView(
-      slivers: [
-        PagedSliverGrid<int, Photo>(
-          pagingController: _pagingController,
-          builderDelegate: PagedChildBuilderDelegate<Photo>(
-            itemBuilder: (context, item, index) {
-              return GridTile(
-                child: CachedNetworkImage(
-                  imageUrl: item.urls?.regular ?? '',
-                  errorWidget: (context, url, err) =>
-                      Text('${item.id} imageNotFound'),
-                ),
-              );
-            },
-          ),
-          gridDelegate: SliverQuiltedGridDelegate(
-            crossAxisCount: 4,
-            mainAxisSpacing: 4,
-            crossAxisSpacing: 4,
-            repeatPattern: QuiltedGridRepeatPattern.inverted,
-            pattern: [
-              const QuiltedGridTile(2, 2),
-              const QuiltedGridTile(1, 1),
-              const QuiltedGridTile(1, 1),
-              const QuiltedGridTile(1, 2),
-            ],
-          ),
-        )
-      ],
+    return RefreshIndicator(
+      onRefresh: _onRefresh,
+      child: CustomScrollView(
+        slivers: [
+          PagedSliverGrid<int, Photo>(
+            pagingController: _pagingController,
+            builderDelegate: PagedChildBuilderDelegate<Photo>(
+              itemBuilder: (context, item, index) {
+                return PhotoGridTileWidget(photo: item);
+              },
+              firstPageErrorIndicatorBuilder: (context) {
+                final message = _messageFromFailure(
+                  _pagingController.error,
+                );
+                return FullPageError(message: message, onTryAgain: _onTryAgain);
+              },
+              newPageErrorIndicatorBuilder: (context) {
+                final message = _messageFromFailure(
+                  _pagingController.error,
+                );
+                return CellErrorWidget(
+                    message: message, onTryAgain: _onTryAgain);
+              },
+              // newPageErrorIndicatorBuilder:
+            ),
+            gridDelegate: SliverQuiltedGridDelegate(
+              crossAxisCount: 4,
+              mainAxisSpacing: 4,
+              crossAxisSpacing: 4,
+              repeatPattern: QuiltedGridRepeatPattern.inverted,
+              pattern: [
+                const QuiltedGridTile(2, 2),
+                const QuiltedGridTile(1, 1),
+                const QuiltedGridTile(1, 1),
+                const QuiltedGridTile(1, 2),
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 
-  _listenToScroll() {
-    _pagingController.addPageRequestListener((pageKey) {
-      _photoListCubit.getPhotos(
-        page: _page,
-        perPage: _perPage,
-      );
-    });
+  void _listenToScroll() {
+    _pagingController.addPageRequestListener(_pageRequestListener);
   }
 
-  _listentToCubit() {
+  void _listentToCubit() {
     _photoListCubit.stream.listen(
       (state) => {
         state.when(
           initial: () {},
           loading: () {},
-          loaded: (newItems) {
-            _pageKey = _pageKey + newItems.length;
-            _page++;
-            if (newItems.length < _perPage) {
-              _pagingController.appendLastPage(newItems);
-            } else {
-              _pagingController.appendPage(newItems, _pageKey);
-            }
-          },
-          failed: (error) {},
+          loaded: _onINewItems,
+          failed: _onError,
         )
       },
     );
+  }
+
+  void _onError(GetPhotoListFailure failure) {
+    final message = _messageFromFailure(failure);
+    _showSnackbar(message);
+    _pagingController.error = failure;
+  }
+
+  void _onINewItems(List<Photo> newItems) {
+    _pageKey++;
+    if (newItems.length < _perPage) {
+      _pagingController.appendLastPage(newItems);
+    } else {
+      _pagingController.appendPage(newItems, _pageKey);
+    }
+  }
+
+  void _showSnackbar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+      ),
+    );
+  }
+
+  Future<void> _onRefresh() async {
+    _pagingController.refresh();
+  }
+
+  String _messageFromFailure(GetPhotoListFailure failure) => failure.when(
+        server: (serverFailure) => serverFailure.message,
+        parsing: (parsingFailure) => MessageConstants.internalError,
+        internet: (internetFailure) => MessageConstants.noInternet,
+      );
+
+  _onTryAgain() {
+    _pagingController.refresh();
   }
 }
