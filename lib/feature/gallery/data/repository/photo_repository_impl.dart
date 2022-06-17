@@ -2,6 +2,7 @@
 import 'package:cloud_photo_gallery/core/exception/server_exception.dart';
 import 'package:cloud_photo_gallery/core/failure/failure.dart';
 import 'package:cloud_photo_gallery/core/failure/get_photo_list_failure.dart';
+import 'package:cloud_photo_gallery/core/network/netowork_connection_checker.dart';
 import 'package:cloud_photo_gallery/feature/gallery/data/data_source/remote/photo_remote_data_source.dart';
 import 'package:cloud_photo_gallery/feature/gallery/data/model/photo_list_model.dart';
 import 'package:cloud_photo_gallery/feature/gallery/domain/entity/photo.dart';
@@ -10,11 +11,13 @@ import 'package:dartz/dartz.dart';
 
 class PhotoRepositoryImpl implements PhotoRepository {
   late PhotoRemoteDataSource _photoRemoteDataSource;
-
+  late NetworkConnectionChecker _networkConnectionChecker;
   PhotoRepositoryImpl({
     required PhotoRemoteDataSource photoRemoteDataSource,
+    required NetworkConnectionChecker networkConnectionChecker,
   }) {
     _photoRemoteDataSource = photoRemoteDataSource;
+    _networkConnectionChecker = networkConnectionChecker;
   }
 
   @override
@@ -43,11 +46,17 @@ class PhotoRepositoryImpl implements PhotoRepository {
         },
       );
     } on ServerException catch (e) {
+      final isConnected = await _networkConnectionChecker.isConnected();
+      if (!isConnected) {
+        return Left(
+          GetPhotoListFailure.internet(
+            noInternetFalure: NoInternetFalure(),
+          ),
+        );
+      }
       return Left(
         GetPhotoListFailure.server(
-          serverFailure: ServerFailure(
-            message: e.message,
-          ),
+          serverFailure: ServerFailure(message: e.message),
         ),
       );
     }
