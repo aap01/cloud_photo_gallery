@@ -49,6 +49,7 @@ android {
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
         minSdkVersion flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion
+        compileSdkVersion flutter.compileSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
@@ -58,8 +59,24 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
+
+            // minifyEnabled true
+            // shrinkResoureces true
+            applicationVariants.all { variant ->
+                variant.outputs.all {
+                    def variantName = variant.name
+                    def versionName = variant.versionName
+                    def formattedDate = new Date().format('dd-MM-YYYY')
+                    outputFileName = "cloud_photo_gallery_${variantName}_D_${formattedDate}_V_${versionName}.apk"
+                }
+            }
+        }
+        debug {
+            applicationIdSuffix '.debug'
+            versionNameSuffix '_debug'
         }
     }
+
 }
 
 flutter {
