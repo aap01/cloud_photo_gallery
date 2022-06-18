@@ -11,6 +11,7 @@ import 'package:dio_logger/dio_logger.dart';
 
 class ApiImpl extends Api {
   late Dio _dio;
+  late CacheStore _cacheStore;
   static const _headers = <String, dynamic>{
     'Content-Type': 'application/json',
   };
@@ -23,7 +24,9 @@ class ApiImpl extends Api {
 
   ApiImpl({
     required Dio dio,
+    required CacheStore cacheStore,
   }) {
+    _cacheStore = cacheStore;
     _dio = dio;
     _dio.options = BaseOptions(connectTimeout: connectionTimeout);
     if (BuildConstants.debug) {
@@ -92,12 +95,12 @@ class ApiImpl extends Api {
 
   CacheOptions get options => CacheOptions(
         // A default store is required for interceptor.
-        store: MemCacheStore(),
+        store: _cacheStore,
 
         // All subsequent fields are optional.
 
         // Default.
-        policy: CachePolicy.request,
+        policy: CachePolicy.forceCache,
         // Returns a cached response on error but for statuses 401 & 403.
         // Also allows to return a cached response on network errors (e.g. offline usage).
         // Defaults to [null].
