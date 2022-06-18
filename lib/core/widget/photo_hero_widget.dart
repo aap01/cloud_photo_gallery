@@ -25,6 +25,7 @@ class PhotoHeroWidget extends StatelessWidget {
         imageUrl: photo.urls?.regular ?? '',
         errorWidget: (context, url, err) => Image.asset(
           AssetConstants.noImage,
+          fit: boxFit,
         ),
         placeholder: (context, url) => const Center(
           child: CupertinoActivityIndicator.partiallyRevealed(),
