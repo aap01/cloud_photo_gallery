@@ -45,12 +45,10 @@ class _PhotoGridBuilderWidgetState extends State<_PhotoGridBuilderWidget> {
   static const _perPage = 10;
   int _pageKey = 1;
   late Function(int) _pageRequestListener;
-  
 
   @override
   void dispose() {
     _pagingController.dispose();
-    
     super.dispose();
   }
 
@@ -68,70 +66,66 @@ class _PhotoGridBuilderWidgetState extends State<_PhotoGridBuilderWidget> {
         perPage: _perPage,
       );
     };
-    _listentToCubit();
     _listenToScroll();
     super.didChangeDependencies();
   }
 
   Widget _photoGridBuilderWidget() {
-    return RefreshIndicator(
-      onRefresh: _onRefresh,
-      child: CustomScrollView(
-        slivers: [
-          PagedSliverGrid<int, Photo>(
-            pagingController: _pagingController,
-            builderDelegate: PagedChildBuilderDelegate<Photo>(
-              itemBuilder: (context, item, index) {
-                return PhotoGridTileWidget(photo: item);
-              },
-              firstPageErrorIndicatorBuilder: (context) {
-                final message = _messageFromFailure(
-                  _pagingController.error,
-                );
-                return FullPageError(
-                  message: message,
-                  onTryAgain: _onTryAgain,
-                );
-              },
-              newPageErrorIndicatorBuilder: (context) {
-                final message = _messageFromFailure(
-                  _pagingController.error,
-                );
-                return CellErrorWidget(
-                  message: message,
-                  onTryAgain: _pagingController.retryLastFailedRequest,
-                );
-              },
-              // newPageErrorIndicatorBuilder:
-            ),
-            gridDelegate: SliverQuiltedGridDelegate(
-              crossAxisCount: 4,
-              mainAxisSpacing: 4,
-              crossAxisSpacing: 4,
-              repeatPattern: QuiltedGridRepeatPattern.same,
-              pattern: GridPatternConstants.galleryPattern,
-            ),
-          )
-        ],
+    return BlocListener<PhotoListCubit, PhotoListState>(
+      listener: (context, state) {
+        state.when(
+          initial: () {},
+          loading: () {},
+          loaded: _onINewItems,
+          failed: _onError,
+        );
+      },
+      child: RefreshIndicator(
+        onRefresh: _onRefresh,
+        child: CustomScrollView(
+          slivers: [
+            PagedSliverGrid<int, Photo>(
+              pagingController: _pagingController,
+              builderDelegate: PagedChildBuilderDelegate<Photo>(
+                itemBuilder: (context, item, index) {
+                  return PhotoGridTileWidget(photo: item);
+                },
+                firstPageErrorIndicatorBuilder: (context) {
+                  final message = _messageFromFailure(
+                    _pagingController.error,
+                  );
+                  return FullPageError(
+                    message: message,
+                    onTryAgain: _onRefresh,
+                  );
+                },
+                newPageErrorIndicatorBuilder: (context) {
+                  final message = _messageFromFailure(
+                    _pagingController.error,
+                  );
+                  return CellErrorWidget(
+                    message: message,
+                    onTryAgain: _pagingController.retryLastFailedRequest,
+                  );
+                },
+                // newPageErrorIndicatorBuilder:
+              ),
+              gridDelegate: SliverQuiltedGridDelegate(
+                crossAxisCount: 4,
+                mainAxisSpacing: 4,
+                crossAxisSpacing: 4,
+                repeatPattern: QuiltedGridRepeatPattern.same,
+                pattern: GridPatternConstants.galleryPattern,
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
 
   void _listenToScroll() {
     _pagingController.addPageRequestListener(_pageRequestListener);
-  }
-
-  void _listentToCubit() {
-    _photoListCubit.stream.listen(
-      (state) => {
-        state.when(
-          initial: () {},
-          loading: () {},
-          loaded: _onINewItems,
-          failed: _onError,
-        )
-      },
-    );
   }
 
   void _onError(GetPhotoListFailure failure) {
@@ -167,7 +161,4 @@ class _PhotoGridBuilderWidgetState extends State<_PhotoGridBuilderWidget> {
         internet: (internetFailure) => MessageConstants.noInternet,
       );
 
-  _onTryAgain() {
-    _pagingController.refresh();
-  }
 }
