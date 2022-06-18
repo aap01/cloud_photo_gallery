@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_photo_gallery/core/exception/server_exception.dart';
-import 'package:cloud_photo_gallery/core/failure/failure.dart';
 import 'package:cloud_photo_gallery/core/failure/get_photo_list_failure.dart';
 import 'package:cloud_photo_gallery/core/network/netowork_connection_checker.dart';
 import 'package:cloud_photo_gallery/feature/gallery/data/data_source/remote/photo_remote_data_source.dart';
@@ -34,9 +33,7 @@ class PhotoRepositoryImpl implements PhotoRepository {
         error: (value) {
           return Left(
             GetPhotoListFailure.server(
-              serverFailure: ServerFailure(
-                message: value.errors.first,
-              ),
+              message: value.errors.first,
             ),
           );
         },
@@ -48,16 +45,12 @@ class PhotoRepositoryImpl implements PhotoRepository {
     } on ServerException catch (e) {
       final isConnected = await _networkConnectionChecker.isConnected();
       if (!isConnected) {
-        return Left(
-          GetPhotoListFailure.internet(
-            noInternetFalure: NoInternetFalure(),
-          ),
+        return const Left(
+          GetPhotoListFailure.internet(),
         );
       }
       return Left(
-        GetPhotoListFailure.server(
-          serverFailure: ServerFailure(message: e.message),
-        ),
+        GetPhotoListFailure.server(message: e.message),
       );
     }
   }
