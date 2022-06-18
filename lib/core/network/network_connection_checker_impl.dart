@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_photo_gallery/core/network/netowork_connection_checker.dart';
@@ -14,5 +16,15 @@ class NetworkConnectionCheckerImpl implements NetworkConnectionChecker {
       return false;
     }
     return false;
+  }
+
+  @override
+  Stream<bool> connectionStream() async* {
+    yield* Stream.periodic(
+      const Duration(seconds: 2),
+      (count) => isConnected(),
+    ).asyncMap(
+      (event) async => await event,
+    );
   }
 }
