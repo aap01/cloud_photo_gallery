@@ -1,4 +1,4 @@
-import 'package:cloud_photo_gallery/core/failure/failure.dart';
+import 'package:cloud_photo_gallery/core/constant/message_constants.dart';
 import 'package:cloud_photo_gallery/core/failure/get_photo_list_failure.dart';
 import 'package:cloud_photo_gallery/core/usecase/params/page_listing_params.dart';
 import 'package:cloud_photo_gallery/feature/gallery/domain/repository/photo_repository.dart';
@@ -22,7 +22,7 @@ void main() {
     perPage: perPage,
     page: page,
   );
-  final serverFalure = ServerFailure();
+  const message = MessageConstants.defaultServerFailureMessage;
 
   test(
     'returns value of Photorepository.getPhotoList method',
@@ -31,7 +31,7 @@ void main() {
         perPage: perPage,
         page: page,
       )).thenAnswer((_) async =>
-          Left(GetPhotoListFailure.server(serverFailure: serverFalure)));
+          const Left(GetPhotoListFailure.server(message: message)));
 
       final result = await usecase(param: pageListingParams);
 
@@ -41,8 +41,7 @@ void main() {
           page: pageListingParams.page,
         ),
       );
-      expect(result,
-          Left(GetPhotoListFailure.server(serverFailure: serverFalure)));
+      expect(result, const Left(GetPhotoListFailure.server(message: message)));
       verifyNoMoreInteractions(mockPhotoRepository);
     },
   );
