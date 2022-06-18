@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:cloud_photo_gallery/core/constant/message_constants.dart';
 import 'package:cloud_photo_gallery/core/failure/get_photo_list_failure.dart';
-import 'package:cloud_photo_gallery/core/network/netowork_connection_checker.dart';
 import 'package:cloud_photo_gallery/feature/gallery/presentation/widget/cell_error_widget.dart';
 import 'package:cloud_photo_gallery/feature/gallery/presentation/widget/full_page_error_widget.dart';
 import 'package:cloud_photo_gallery/feature/gallery/presentation/widget/grid_pattern_constants.dart';
@@ -12,7 +11,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
-import '../../../../core/di/service_locator.dart';
 import '../../domain/entity/photo.dart';
 import '../cubit/photolist_cubit.dart';
 
@@ -47,12 +45,12 @@ class _PhotoGridBuilderWidgetState extends State<_PhotoGridBuilderWidget> {
   static const _perPage = 10;
   int _pageKey = 1;
   late Function(int) _pageRequestListener;
-  StreamSubscription? _sub;
+  
 
   @override
   void dispose() {
     _pagingController.dispose();
-    _sub?.cancel();
+    
     super.dispose();
   }
 
@@ -140,14 +138,6 @@ class _PhotoGridBuilderWidgetState extends State<_PhotoGridBuilderWidget> {
     final message = _messageFromFailure(failure);
     _showSnackbar(message);
     _pagingController.error = failure;
-    if (message == MessageConstants.noInternet) {
-      _sub = sl<NetworkConnectionChecker>().connectionStream().listen((event) {
-        if (event) {
-          _pagingController.retryLastFailedRequest();
-          _sub?.cancel();
-        }
-      });
-    }
   }
 
   void _onINewItems(List<Photo> newItems) {
