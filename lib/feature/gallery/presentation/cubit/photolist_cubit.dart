@@ -2,7 +2,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:cloud_photo_gallery/core/failure/get_photo_list_failure.dart';
+import 'package:cloud_photo_gallery/core/constant/message_constants.dart';
 import 'package:cloud_photo_gallery/core/network/netowork_connection_checker.dart';
 import 'package:cloud_photo_gallery/core/usecase/params/page_listing_params.dart';
 import 'package:cloud_photo_gallery/feature/gallery/domain/entity/photo.dart';
@@ -35,22 +35,28 @@ class PhotoListCubit extends Cubit<PhotoListState> {
     photoListEither.fold(
       (l) {
         l.map(
-          server: (server) => emit(PhotoListState.failed(failure: l)),
-          parsing: (parsing) => emit(PhotoListState.failed(failure: l)),
+          server: (server) => emit(
+            PhotoListState.otherError(message: server.message),
+          ),
+          parsing: (parsing) => emit(
+            const PhotoListState.otherError(
+                message: MessageConstants.internalError),
+          ),
           internet: (internet) {
-            _streamSubscription = _networkConnectionChecker
-                .connectionStream()
-                .listen((event) async {
-              if (event) {
-                await getPhotos(page: page, perPage: perPage);
-                _streamSubscription?.cancel();
-              } else {
-                emit(PhotoListState.failed(failure: l));
-              }
-            });
+            emit(
+              const PhotoListState.noInternet(),
+            );
+            _streamSubscription =
+                _networkConnectionChecker.connectionStream().listen(
+              (isConnected) async {
+                if (isConnected) {
+                  await getPhotos(page: page, perPage: perPage);
+                  _streamSubscription?.cancel();
+                }
+              },
+            );
           },
         );
-        emit(PhotoListState.failed(failure: l));
       },
       (r) => emit(PhotoListState.loaded(photos: r)),
     );
