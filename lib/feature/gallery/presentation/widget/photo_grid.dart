@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cloud_photo_gallery/core/constant/message_constants.dart';
-import 'package:cloud_photo_gallery/core/failure/get_photo_list_failure.dart';
 import 'package:cloud_photo_gallery/feature/gallery/presentation/widget/cell_error_widget.dart';
 import 'package:cloud_photo_gallery/feature/gallery/presentation/widget/full_page_error_widget.dart';
 import 'package:cloud_photo_gallery/feature/gallery/presentation/widget/grid_pattern_constants.dart';
@@ -74,11 +73,17 @@ class _PhotoGridBuilderWidgetState extends State<_PhotoGridBuilderWidget> {
     return BlocListener<PhotoListCubit, PhotoListState>(
       listener: (context, state) {
         state.when(
-          initial: () {},
-          loading: () {},
-          loaded: _onINewItems,
-          failed: _onError,
-        );
+            initial: () {},
+            loading: () {},
+            loaded: _onINewItems,
+            otherError: (message) {
+              _showSnackbar(message);
+              _addErrorToPagingController();
+            },
+            noInternet: () {
+              _showSnackbar(MessageConstants.noInternet);
+              _addErrorToPagingController();
+            });
       },
       child: RefreshIndicator(
         onRefresh: _onRefresh,
@@ -91,21 +96,38 @@ class _PhotoGridBuilderWidgetState extends State<_PhotoGridBuilderWidget> {
                   return PhotoGridTileWidget(photo: item);
                 },
                 firstPageErrorIndicatorBuilder: (context) {
-                  final message = _messageFromFailure(
-                    _pagingController.error,
-                  );
-                  return FullPageError(
-                    message: message,
-                    onTryAgain: _onRefresh,
+                  return BlocBuilder<PhotoListCubit, PhotoListState>(
+                    builder: (context, state) {
+                      return state.when(
+                        initial: () => const SizedBox(),
+                        loading: () => const SizedBox(),
+                        loaded: (_) => const SizedBox(),
+                        noInternet: () => FullPageError(
+                          message: MessageConstants.noInternet,
+                          onTryAgain: _onRefresh,
+                        ),
+                        otherError: (message) => FullPageError(
+                          message: message,
+                          onTryAgain: _onRefresh,
+                        ),
+                      );
+                    },
                   );
                 },
                 newPageErrorIndicatorBuilder: (context) {
-                  final message = _messageFromFailure(
-                    _pagingController.error,
-                  );
-                  return CellErrorWidget(
-                    message: message,
-                    onTryAgain: _pagingController.retryLastFailedRequest,
+                  return BlocBuilder<PhotoListCubit, PhotoListState>(
+                    builder: (context, state) {
+                      return state.when(
+                        initial: () => const SizedBox(),
+                        loading: () => const SizedBox(),
+                        loaded: (_) => const SizedBox(),
+                        noInternet: () => const SizedBox(),
+                        otherError: (message) => CellErrorWidget(
+                          message: message,
+                          onTryAgain: _onRefresh,
+                        ),
+                      );
+                    },
                   );
                 },
                 // newPageErrorIndicatorBuilder:
@@ -126,12 +148,6 @@ class _PhotoGridBuilderWidgetState extends State<_PhotoGridBuilderWidget> {
 
   void _listenToScroll() {
     _pagingController.addPageRequestListener(_pageRequestListener);
-  }
-
-  void _onError(GetPhotoListFailure failure) {
-    final message = _messageFromFailure(failure);
-    _showSnackbar(message);
-    _pagingController.error = failure;
   }
 
   void _onINewItems(List<Photo> newItems) {
@@ -155,10 +171,7 @@ class _PhotoGridBuilderWidgetState extends State<_PhotoGridBuilderWidget> {
     _pagingController.refresh();
   }
 
-  String _messageFromFailure(GetPhotoListFailure failure) => failure.when(
-        server: (serverFailure) => serverFailure.message,
-        parsing: (parsingFailure) => MessageConstants.internalError,
-        internet: (internetFailure) => MessageConstants.noInternet,
-      );
-
+  _addErrorToPagingController() {
+    _pagingController.error = true;
+  }
 }
