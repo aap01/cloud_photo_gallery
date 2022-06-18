@@ -87,14 +87,19 @@ class _PhotoGridBuilderWidgetState extends State<_PhotoGridBuilderWidget> {
                 final message = _messageFromFailure(
                   _pagingController.error,
                 );
-                return FullPageError(message: message, onTryAgain: _onTryAgain);
+                return FullPageError(
+                  message: message,
+                  onTryAgain: _onTryAgain,
+                );
               },
               newPageErrorIndicatorBuilder: (context) {
                 final message = _messageFromFailure(
                   _pagingController.error,
                 );
                 return CellErrorWidget(
-                    message: message, onTryAgain: _onTryAgain);
+                  message: message,
+                  onTryAgain: _pagingController.retryLastFailedRequest,
+                );
               },
               // newPageErrorIndicatorBuilder:
             ),
