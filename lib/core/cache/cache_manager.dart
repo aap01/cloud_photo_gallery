@@ -1,13 +1,13 @@
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
-abstract class CacheManager {
+abstract class AppCacheManager {
   Future<String> getCachedFilePath(String key);
 }
 
-class AppCacheManager extends CacheManager {
+class AppCacheManagerImpl extends AppCacheManager {
   late BaseCacheManager _baseCacheManager;
 
-  AppCacheManager({required BaseCacheManager baseCacheManager}) {
+  AppCacheManagerImpl({required BaseCacheManager baseCacheManager}) {
     _baseCacheManager = baseCacheManager;
   }
 
