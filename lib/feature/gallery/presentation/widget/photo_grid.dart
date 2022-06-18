@@ -14,7 +14,6 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../../../../core/di/service_locator.dart';
 import '../../domain/entity/photo.dart';
-import '../../domain/usecase/get_photo_list_usecase.dart';
 import '../cubit/photolist_cubit.dart';
 
 class PhotoGridWidget extends StatelessWidget {
@@ -25,9 +24,7 @@ class PhotoGridWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<PhotoListCubit>(
-      create: (_) => PhotoListCubit(
-        getPhotoListUsecase: sl<GetPhotoListUsecase>(),
-      ),
+      create: (_) => PhotoListCubit(),
       child: const _PhotoGridBuilderWidget(),
     );
   }
