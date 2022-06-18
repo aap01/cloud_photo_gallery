@@ -7,8 +7,7 @@ A flutter application
 
 ## Features
  :white_check_mark: Showcase cloud photos in a gallery\
- ✅ Caches api photolist\
- ✅ Caches photos\
+ ✅ Caches photos for offline use\
  :white_check_mark: Download photos\
  :white_check_mark: Share photos
 
