@@ -9,16 +9,16 @@ part 'photo_model.g.dart';
 @JsonSerializable()
 class PhotoModel extends Photo {
   @JsonKey(name: 'links')
-  LinksModel? linksModel;
+  final LinksModel linksModel;
   @JsonKey(name: 'urls')
-  UrlsModel? urlsModel;
+  final UrlsModel urlsModel;
 
-  PhotoModel({
+  const PhotoModel({
     required super.id,
     required super.width,
     required super.height,
-    this.linksModel,
-    this.urlsModel,
+    required this.linksModel,
+    required this.urlsModel,
   }) : super(
           links: linksModel,
           urls: urlsModel,
