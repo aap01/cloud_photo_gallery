@@ -6,6 +6,5 @@ part 'get_photo_list_failure.freezed.dart';
 @freezed
 class GetPhotoListFailure extends Failure with _$GetPhotoListFailure {
   const factory GetPhotoListFailure.server({required String message}) = Server;
-  const factory GetPhotoListFailure.parsing() = Json;
   const factory GetPhotoListFailure.internet() = NoInternet;
 }
