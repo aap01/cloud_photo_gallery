@@ -38,10 +38,6 @@ class PhotoListCubit extends Cubit<PhotoListState> {
           server: (server) => emit(
             PhotoListState.otherError(message: server.message),
           ),
-          parsing: (parsing) => emit(
-            const PhotoListState.otherError(
-                message: MessageConstants.internalError),
-          ),
           internet: (internet) {
             emit(
               const PhotoListState.noInternet(),
