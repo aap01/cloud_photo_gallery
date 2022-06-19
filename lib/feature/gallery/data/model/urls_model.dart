@@ -6,7 +6,7 @@ part 'urls_model.g.dart';
 
 @JsonSerializable()
 class UrlsModel extends Urls {
-  UrlsModel({
+  const UrlsModel({
     required super.raw,
     required super.full,
     required super.regular,
