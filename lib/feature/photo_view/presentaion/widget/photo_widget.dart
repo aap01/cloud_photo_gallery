@@ -18,7 +18,7 @@ class PhotoWidget extends StatelessWidget {
       tag: photo.id,
       child: CachedNetworkImage(
         fit: BoxFit.contain,
-        imageUrl: photo.urls?.regular ?? '',
+        imageUrl: photo.urls.regular,
         errorWidget: (context, url, err) => Image.asset(
           AssetConstants.noImage,
         ),
