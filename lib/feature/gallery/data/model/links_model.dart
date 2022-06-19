@@ -6,7 +6,7 @@ part 'links_model.g.dart';
 
 @JsonSerializable()
 class LinksModel extends Links {
-  LinksModel({
+  const LinksModel({
     required super.self,
     required super.html,
     required super.download,
