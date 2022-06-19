@@ -22,7 +22,7 @@ class PhotoHeroWidget extends StatelessWidget {
       child: CachedNetworkImage(
         cacheManager: sl<BaseCacheManager>(),
         fit: boxFit,
-        imageUrl: photo.urls?.regular ?? '',
+        imageUrl: photo.urls.regular,
         errorWidget: (context, url, err) => Image.asset(
           AssetConstants.noImage,
           fit: boxFit,
