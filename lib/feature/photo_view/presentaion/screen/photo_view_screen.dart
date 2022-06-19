@@ -65,8 +65,8 @@ class ImageShareWidget extends StatelessWidget {
   }
 
   Future<void> _share(BuildContext context, Photo photo) async {
-    final photoPath = await sl<AppCacheManager>()
-        .getCachedFilePath(photo.urls?.regular ?? '');
+    final photoPath =
+        await sl<AppCacheManager>().getCachedFilePath(photo.urls.regular);
     Share.shareFilesWithResult([photoPath]).then(
       (value) {
         if (value.raw.isNotEmpty) {
@@ -105,8 +105,8 @@ class _ImageDownloaderWidgetState extends State<ImageDownloaderWidget> {
   }
 
   Future<void> _onPressed(Photo photo) async {
-    final cachedPath = await sl<AppCacheManager>()
-        .getCachedFilePath(photo.urls?.regular ?? '');
+    final cachedPath =
+        await sl<AppCacheManager>().getCachedFilePath(photo.urls.regular);
     FileHelper.download('${photo.id}.jpg', cachedPath).then(
       (file) => ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
