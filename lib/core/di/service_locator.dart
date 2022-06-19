@@ -1,4 +1,3 @@
-import 'package:cloud_photo_gallery/core/api/api_impl.dart';
 import 'package:cloud_photo_gallery/core/cache/cache_manager.dart';
 import 'package:cloud_photo_gallery/core/cache/file_saver.dart';
 import 'package:cloud_photo_gallery/core/network/netowork_connection_checker.dart';
@@ -14,7 +13,6 @@ import 'package:get_it/get_it.dart';
 
 import '../../feature/gallery/data/data_source/remote/photo_remote_data_source.dart';
 import '../../feature/gallery/domain/repository/photo_repository.dart';
-import '../api/api.dart';
 
 final sl = GetIt.instance;
 
@@ -29,10 +27,7 @@ class ServiceLocator {
       ),
     );
     sl.registerLazySingleton<PhotoRemoteDataSource>(
-      () => PhotoRemoteDataSourceImpl(api: sl()),
-    );
-    sl.registerLazySingleton<Api>(
-      () => ApiImpl(
+      () => PhotoRemoteDataSourceImpl(
         dio: sl(),
         cacheStore: sl(),
       ),
@@ -46,7 +41,7 @@ class ServiceLocator {
     );
 
     final appDirectory = await FileHelper.documentsDirectoryPath;
-    
+
     // 3rd party
     sl.registerLazySingleton(
       () => Dio(),
