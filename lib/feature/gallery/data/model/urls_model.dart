@@ -1,9 +1,10 @@
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'urls_model.g.dart';
 
 @JsonSerializable()
-class UrlsModel {
+class UrlsModel extends Equatable {
   final String raw;
   final String full;
   final String regular;
@@ -23,4 +24,14 @@ class UrlsModel {
       _$UrlsModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$UrlsModelToJson(this);
+
+  @override
+  List<Object?> get props => [
+        raw,
+        full,
+        regular,
+        small,
+        thumb,
+        smallS3,
+      ];
 }
