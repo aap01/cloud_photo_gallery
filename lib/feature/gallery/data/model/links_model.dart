@@ -1,16 +1,18 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import '../../domain/entity/links.dart';
-
 part 'links_model.g.dart';
 
 @JsonSerializable()
-class LinksModel extends Links {
+class LinksModel {
+  final String self;
+  final String html;
+  final String download;
+  final String downloadLocation;
   const LinksModel({
-    required super.self,
-    required super.html,
-    required super.download,
-    required super.downloadLocation,
+    required this.self,
+    required this.html,
+    required this.download,
+    required this.downloadLocation,
   });
 
   factory LinksModel.fromJson(Map<String, dynamic> json) =>
