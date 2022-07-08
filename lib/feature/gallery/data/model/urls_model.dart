@@ -1,18 +1,22 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import '../../domain/entity/urls.dart';
-
 part 'urls_model.g.dart';
 
 @JsonSerializable()
-class UrlsModel extends Urls {
+class UrlsModel {
+  final String raw;
+  final String full;
+  final String regular;
+  final String small;
+  final String thumb;
+  final String smallS3;
   const UrlsModel({
-    required super.raw,
-    required super.full,
-    required super.regular,
-    required super.small,
-    required super.thumb,
-    required super.smallS3,
+    required this.raw,
+    required this.full,
+    required this.regular,
+    required this.small,
+    required this.thumb,
+    required this.smallS3,
   });
 
   factory UrlsModel.fromJson(Map<String, dynamic> json) =>
