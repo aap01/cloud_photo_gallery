@@ -5,18 +5,22 @@ import 'package:cloud_photo_gallery/core/failure/get_photo_list_failure.dart';
 import 'package:cloud_photo_gallery/core/network/netowork_connection_checker.dart';
 import 'package:cloud_photo_gallery/feature/gallery/data/data_source/remote/photo_remote_data_source.dart';
 import 'package:cloud_photo_gallery/feature/gallery/domain/entity/photo.dart';
+import 'package:cloud_photo_gallery/feature/gallery/domain/mapper/photo_list_mapper.dart';
 import 'package:cloud_photo_gallery/feature/gallery/domain/repository/photo_repository.dart';
 import 'package:dartz/dartz.dart';
 
 class PhotoRepositoryImpl implements PhotoRepository {
   late PhotoRemoteDataSource _photoRemoteDataSource;
+  late PhotoListMapper _mapper;
   late NetworkConnectionChecker _networkConnectionChecker;
   PhotoRepositoryImpl({
     required PhotoRemoteDataSource photoRemoteDataSource,
     required NetworkConnectionChecker networkConnectionChecker,
+    required PhotoListMapper mapper,
   }) {
     _photoRemoteDataSource = photoRemoteDataSource;
     _networkConnectionChecker = networkConnectionChecker;
+    _mapper = mapper;
   }
 
   @override
@@ -29,7 +33,7 @@ class PhotoRepositoryImpl implements PhotoRepository {
         perPage: perPage,
         page: page,
       );
-      return Right(response);
+      return Right(_mapper.map(response));
     } on ServerException catch (e) {
       final isConnected = await _networkConnectionChecker.isConnected();
       if (!isConnected) {
