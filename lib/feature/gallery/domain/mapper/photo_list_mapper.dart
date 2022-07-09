@@ -4,12 +4,10 @@ import 'package:cloud_photo_gallery/feature/gallery/domain/mapper/domain_mapper.
 
 import '../../data/model/photo_model.dart';
 
-
-
 class PhotoListMapper {
   late final DomainMapper<Photo, PhotoModel> _mapper;
   PhotoListMapper({
-    required mapper,
+    required DomainMapper<Photo, PhotoModel> mapper,
   }) {
     _mapper = mapper;
   }
