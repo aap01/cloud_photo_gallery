@@ -1,5 +1,6 @@
 import 'package:cloud_photo_gallery/core/constant/message_constants.dart';
 import 'package:cloud_photo_gallery/core/exception/server_exception.dart';
+import 'package:cloud_photo_gallery/core/secret/secrets.dart';
 import 'package:cloud_photo_gallery/feature/gallery/data/data_source/remote/photo_remote_data_source.dart';
 import 'package:cloud_photo_gallery/feature/gallery/data/model/page_listing_model.dart';
 import 'package:dio/dio.dart';
@@ -28,9 +29,8 @@ class PhotoRemoteDataSourceImpl implements PhotoRemoteDataSource {
   };
 
   // This key must be hidden in a file which should not be version controlled
-  // TODO: Move to an untracked file
   static const _staticParams = <String, dynamic>{
-    'client_id': 'dibkYN-2v5YRxazoVMhj3xkNY9YFh87Jcy93SUGDzp0',
+    'client_id': Secrets.accessKey,
   };
 
   PhotoRemoteDataSourceImpl({
