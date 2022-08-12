@@ -23,8 +23,8 @@ How to get `accessKey` as referred in [secrets.dart](/lib/core/secret/secrets.da
 ![alt text](client_id.png)
 
  5. Update [secrets.dart](/lib/core/secret/secrets.dart) accordingly
+ 6. **For contributors: Disable pushing your own changes of [secrets.dart](/lib/core/secret/secrets.dart) file by running `git update-index --assume-unchanged lib/core/secret/*`**
 
-Note: [secrets.dart](/lib/core/secret/secrets.dart) is not version controlled
 
 ### Commands
 
