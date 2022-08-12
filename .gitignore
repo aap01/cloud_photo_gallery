@@ -50,4 +50,5 @@ app.*.map.json
 
 coverage/
 
-
+# Secrets
+/lib/core/secret
