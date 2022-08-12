@@ -11,15 +11,18 @@ A flutter application
  :white_check_mark: Download photos\
  :white_check_mark: Share photos
 
-## Commands
+## Run It
+
+### Commands
 
 ```bash
 # Code generation
 
-chmod +x build_runner.sh
-./build_runner.sh
+chmod +x scripts/build_runner.sh
+./scripts/build_runner.sh
 ```
 ## License
 
 Released under [MIT](/LICENSE) by [@aap01](https://github.com/aap01).
+
 
